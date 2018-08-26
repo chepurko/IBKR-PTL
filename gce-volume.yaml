@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: slow
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+  zone: europe-west1-d
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ibkr-ptl-pv
+  labels:
+    app: ibkr-ptl
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: slow
+  gcePersistentDisk:
+    pdName: ibkr-ptl
+    fsType: ext4

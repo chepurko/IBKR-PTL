@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ibkr-ptl
+  namespace: ibkr-ptl
+  labels:
+    app: ibkr-ptl
+    track: stable
+spec:
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: ibkr-ptl
+        app: ibkr-ptl
+    spec:
+      securityContext:
+        fsGroup: 2000
+      containers:
+      - env:
+        - name: VNC_PW
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: vnc-pw
+        image: chepurko/ibkr-ptl:v0.5
+        name: ibkr-ptl
+        volumeMounts:
+        - name: ibkr-ptl
+          mountPath: /headless/Apps
+      volumes:
+      - name: ibkr-ptl
+        persistentVolumeClaim:
+          claimName: ibkr-ptl-pv-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ibkr-ptl-pv-claim
+  namespace: ibkr-ptl
+  labels:
+    app: ibkr-ptl
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: slow
+  selector:
+    matchLabels:
+      app: ibkr-ptl
