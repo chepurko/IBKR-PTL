@@ -16,16 +16,11 @@ gcloud compute disks create --size=5GB --zone=[your-gce-zone] ibkr-ptl
 kubectl apply -f gce-volume.yaml
 ```
 
-### Create a password to login to VNC with
-
-```bash
-kubectl create secret generic vnc-pw --from-literal=password=[your-password] --namespace=ibkr-ptl
-```
-
-### Create the namespace and the deployment
+### Create the namespace, password to login to VNC with, and the deployment
 
 ```bash
 kubectl apply -f 00-namespace.yaml
+kubectl create secret generic vnc-pw --from-literal=password=[your-password] --namespace=ibkr-ptl
 kubectl apply -f ibkr-ptl-Deployment.yaml
 ```
 
